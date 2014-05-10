@@ -3,6 +3,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"html/template"
 	"io"
 	"net/http"
@@ -48,6 +49,14 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		io.WriteString(w, "successful")
+	}
+}
+
+func init() {
+	if err := os.Mkdir("upload", 0777); err == nil {
+		fmt.Println("upload dir created")
+	} else {
+		fmt.Println(err)
 	}
 }
 
