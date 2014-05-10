@@ -1,4 +1,12 @@
-//gouplo is a simple Go-based file upload form that utilizes jQuery/Ajax.
+/*
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this
+file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+/*
+gouplo is a simple Go-based file upload form that utilizes jQuery/Ajax.
+*/
 package main
 
 import (
@@ -29,7 +37,7 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		m := r.MultipartForm
-		files := m.File["myfiles"]
+		files := m.File["files"]
 		for i, _ := range files {
 			file, err := files[i].Open() //open file
 			defer file.Close()
