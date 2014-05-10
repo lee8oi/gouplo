@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>File Upload Demo</title>
+	<script src="//code.jquery.com/jquery-1.9.1.js"></script>
+	<script type="text/javascript">
+		$( document ).ready(function() {
+			$("#upload").click(function () {
+				console.log("form submitted");
+				var fd = new FormData(document.getElementById("uploadform"));
+				$.ajax({
+					url: "/upload",
+					type: "POST",
+					data: fd,
+					enctype: 'multipart/form-data',
+					processData: false,  // tell jQuery not to process the data
+					contentType: false   // tell jQuery not to set contentType
+				}).done(function( data ) {
+					$("#message").text(data)
+					console.log( data );
+				});
+			});
+		});
+	</script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>File Upload Demo</h1>
+      <div id="message">{{.}}</div>
+      <form id="uploadform" name="uploadform" class="form-signin" method="post" action="/upload" enctype="multipart/form-data">
+          <fieldset>
+            <input type="file" name="myfiles" id="myfiles" multiple="multiple">
+            <input type="button" id="upload" name="upload" value="Upload">
+        </fieldset>
+      </form>
+    </div>
+  </body>
+</html>
