@@ -17,7 +17,7 @@
 					}).done(function(data) {
 						if (data == "successful") {
 							$("#message").text("Upload Successful! Ready for more files.")
-							$("#myfiles").replaceWith($("#myfiles").val('').clone(true));
+							$("#files").replaceWith($("#myfiles").val('').clone(true));
 						} else {
 							$("#message").text(data)
 						}
