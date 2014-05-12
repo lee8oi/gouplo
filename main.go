@@ -22,13 +22,13 @@ import (
 )
 
 var addr = flag.String("addr", ":8080", "http service address")
-var homefile = flag.String("home", "home.html", "home html template file")
-var uploadDir = flag.String("upload", "upload/", "path to upload directory")
-var publicDir = flag.String("public", "public/", "path to public directory")
-var createDirs = flag.Bool("create", false, "create upload & public directories")
-var username = flag.String("user", "myuser", "server login user name")
-var password = flag.String("pass", "mypass", "server login password")
-var realm = flag.String("realm", "myrealm", "server realm")
+var homefile = flag.String("home", "home.html", "full path to home html template file")
+var uploadDir = flag.String("upload", "upload/", "full path to upload directory")
+var publicDir = flag.String("public", "public/", "full path to public directory")
+var createDirs = flag.Bool("create", false, "create missing directories")
+var username = flag.String("user", "myuser", "set server login user name")
+var password = flag.String("pass", "mypass", "set server login password")
+var realm = flag.String("realm", "myrealm", "set server realm")
 
 func homeHandler(w http.ResponseWriter, r *auth.AuthenticatedRequest) {
 	template.Must(template.ParseFiles(*homefile)).Execute(w, r.Host)
