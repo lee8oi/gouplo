@@ -25,14 +25,13 @@ var addr = flag.String("addr", ":8080", "http service address")
 var homefile = flag.String("home", "home.html", "home html template file")
 var uploadDir = flag.String("upload", "upload/", "path to upload directory")
 var publicDir = flag.String("public", "public/", "path to public directory")
+var createDirs = flag.Bool("create", false, "create upload & public directories")
 var username = flag.String("user", "myuser", "server login user name")
 var password = flag.String("pass", "mypass", "server login password")
 var realm = flag.String("realm", "myrealm", "server realm")
 
-var homeTempl = template.Must(template.ParseFiles(*homefile))
-
 func homeHandler(w http.ResponseWriter, r *auth.AuthenticatedRequest) {
-	homeTempl.Execute(w, r.Host)
+	template.Must(template.ParseFiles(*homefile)).Execute(w, r.Host)
 }
 
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
@@ -83,16 +82,18 @@ func Secret(user, rlm string) string {
 }
 
 func init() {
-	if err := os.Mkdir(*uploadDir, 0777); err == nil {
-		fmt.Println("directory created: ", *uploadDir)
-	}
-	if err := os.Mkdir(*publicDir, 0777); err == nil {
-		fmt.Println("directory created: ", *publicDir)
+	flag.Parse()
+	if *createDirs == true {
+		if err := os.Mkdir(*uploadDir, 0777); err == nil {
+			fmt.Println("directory created: ", *uploadDir)
+		}
+		if err := os.Mkdir(*publicDir, 0777); err == nil {
+			fmt.Println("directory created: ", *publicDir)
+		}
 	}
 }
 
 func main() {
-	flag.Parse()
 	authenticator := auth.NewDigestAuthenticator(*realm, Secret)
 	http.HandleFunc("/", authenticator.Wrap(homeHandler))
 	http.HandleFunc("/upload", uploadHandler)
