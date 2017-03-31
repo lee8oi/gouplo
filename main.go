@@ -39,6 +39,25 @@ func main() {
 	}
 }
 
+// config type contains the necessary server configuration strings.
+type config struct {
+	HTTPPort, HTTPSPort, IndexFile, PubDir, UpDir, User, Pass, Realm,
+	Domain, CertPem, KeyPem string
+}
+
+// loadConfig loads configuration values from file.
+func loadConfig(path string) (c config) {
+	b, err := ioutil.ReadFile(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = json.Unmarshal(b, &c)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return
+}
+
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	template.Must(template.ParseFiles(cfg.IndexFile)).Execute(w, r.Host)
 }
@@ -74,25 +93,6 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		io.WriteString(w, "successful")
 	}
-}
-
-// config type contains the necessary server configuration strings.
-type config struct {
-	HTTPPort, HTTPSPort, IndexFile, PubDir, UpDir, User, Pass, Realm,
-	Domain, CertPem, KeyPem string
-}
-
-// loadConfig loads configuration values from file.
-func loadConfig(path string) (c config) {
-	b, err := ioutil.ReadFile(path)
-	if err != nil {
-		log.Fatal(err)
-	}
-	err = json.Unmarshal(b, &c)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return
 }
 
 // authHandler wraps a handler function to provide http basic authentication.
