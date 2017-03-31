@@ -8,6 +8,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 package main
 
 import (
+	"crypto/md5"
+	"crypto/subtle"
 	"encoding/json"
 	"flag"
 	"html/template"
@@ -24,7 +26,7 @@ var cfg config
 func main() {
 	flag.Parse()
 	cfg = loadConfig(*cfgPath)
-	http.HandleFunc("/", authHandler(indexHandler, cfg.User, cfg.Pass, cfg.Realm))
+	http.HandleFunc("/", authHandler(indexHandler, hasher(cfg.User), hasher(cfg.Pass), cfg.Realm))
 	http.HandleFunc("/upload", uploadHandler)
 	http.Handle("/pub/", http.StripPrefix("/pub/", http.FileServer(http.Dir(cfg.PubDir))))
 	go func() {
@@ -37,6 +39,12 @@ func main() {
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
+}
+
+// hasher hashes the given string and returns the sum as a slice of bytes.
+func hasher(s string) []byte {
+	val := md5.Sum([]byte(s))
+	return val[:]
 }
 
 // config type contains the necessary server configuration strings.
@@ -96,13 +104,15 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // authHandler wraps a handler function to provide http basic authentication.
-func authHandler(handler http.HandlerFunc, username, password, realm string) http.HandlerFunc {
+func authHandler(handler http.HandlerFunc, username, password []byte, realm string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		u, p, ok := r.BasicAuth()
-		if !ok || u != username || p != password {
+		user, pass, ok := r.BasicAuth()
+		userByt, passByt := hasher(user), hasher(pass)
+		if !ok || subtle.ConstantTimeCompare(userByt,
+			username) != 1 || subtle.ConstantTimeCompare(passByt, password) != 1 {
 			w.Header().Set("WWW-Authenticate", `Basic realm="`+realm+`"`)
 			w.WriteHeader(http.StatusUnauthorized)
-			w.Write([]byte("401 Unauthorized\n"))
+			w.Write([]byte("Unauthorised.\n"))
 			return
 		}
 		handler(w, r)
