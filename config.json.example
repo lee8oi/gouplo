@@ -1,0 +1,13 @@
+{
+	"HTTPPort": "80",
+	"HTTPSPort": "443",
+	"IndexFile": "index.html",
+	"Domain": "example.com",
+	"PubDir": "public",
+	"UpDir": "uploads",
+	"CertPem": "certs/fullchain.pem",
+	"KeyPem": "certs/privkey.pem",
+	"User": "admin",
+	"Pass": "12345",
+	"Realm": "Enter username and password"
+}
