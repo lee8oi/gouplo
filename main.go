@@ -8,7 +8,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 package main
 
 import (
-	"crypto/md5"
+	"crypto/sha256"
 	"crypto/subtle"
 	"encoding/json"
 	"flag"
@@ -43,7 +43,7 @@ func main() {
 
 // hasher hashes the given string and returns the sum as a slice of bytes.
 func hasher(s string) []byte {
-	val := md5.Sum([]byte(s))
+	val := sha256.Sum256([]byte(s)) // old: md5.Sum([]byte(s))
 	return val[:]
 }
 
