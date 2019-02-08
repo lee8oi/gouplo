@@ -7,6 +7,8 @@ Gouplo is a simple & easy-to-use Go based fileserver with multi-file upload capa
 * Multiple file handling for batch upload jobs (no progress bar).
 * Easily configurable via json config file.
 
+NOTE: "This serves only as a demonstration. One can simply bypass the loggin if he directly accesses the subdomains."
+
 # Usage
 
 ##### Generate SSL certificates.
